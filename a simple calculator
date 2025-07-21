@@ -1,0 +1,40 @@
+print("💻 I am your Calculator...")
+
+while True:
+    a = int(input("\nEnter the First Number: "))
+    b = int(input("Enter the Second Number: "))
+
+    print("\nSelect the operation:")
+    print("\t1. Addition")
+    print("\t2. Subtraction")
+    print("\t3. Multiplication")
+    print("\t4. Division")
+    print("\t5. Exit")
+
+    choice = int(input("Enter your Choice (1-5): "))
+
+    if choice == 1:
+        print("You opted for Addition....")
+        print("Result:", a + b)
+
+    elif choice == 2:
+        print("You opted for Subtraction....")
+        print("Result:", a - b)
+
+    elif choice == 3:
+        print("You opted for Multiplication....")
+        print("Result:", a * b)
+
+    elif choice == 4:
+        print("You opted for Division....")
+        if b != 0:
+            print("Result:", a / b)
+        else:
+            print("❌ Error: Cannot divide by zero.")
+
+    elif choice == 5:
+        print("👋 Exiting Calculator. Thank you!")
+        break
+
+    else:
+        print("⚠️ Invalid choice! Please enter a number between 1 and 5.")
