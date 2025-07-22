@@ -1,0 +1,97 @@
+import tkinter as tk
+from tkinter import font
+import string
+
+
+def check_password():
+    pas = password_entry.get()
+    Lower = 0
+    Upper = 0
+    Special = 0
+    TestPassed = 0
+    Length = len(pas)
+
+    result_text = ""
+
+    # Length Test
+    if Length >= 8:
+        result_text += "✅ Passed the Length Test\n"
+        TestPassed += 1
+    else:
+        result_text += "❌ Password must be at least 8 characters\n"
+
+    # Case Test
+    for char in pas:
+        if char.isupper():
+            Upper += 1
+        elif char.islower():
+            Lower += 1
+
+    result_text += f"🔠 Uppercase Letters: {Upper}\n"
+    result_text += f"🔡 Lowercase Letters: {Lower}\n"
+
+    if Upper >= 2:
+        result_text += "✅ Passed the Cases Test\n"
+        TestPassed += 1
+    else:
+        result_text += "❌ At least 2 uppercase letters required\n"
+
+    # Special Character Test
+    for ch in pas:
+        if ch in string.punctuation:
+            Special += 1
+    result_text += f"💥 Special Characters: {Special}\n"
+
+    if Special == 2:
+        result_text += "✅ Passed the Special Character Test\n"
+        TestPassed += 1
+    else:
+        result_text += "❌ Exactly 2 special characters required\n"
+
+    # Final Strength
+    result_text += f"\n📊 Tests Passed: {TestPassed}/3\n"
+    if TestPassed == 3:
+        result_text += "🔒 Strength: ✅ Strong Password"
+    elif TestPassed == 2:
+        result_text += "🟡 Strength: Medium Password"
+    else:
+        result_text += "🔴 Strength: Weak Password"
+
+    result_label.config(text=result_text)
+    result_text += f"\n🔑 Password Entered: {pas}\n"
+
+
+# GUI Setup
+root = tk.Tk()
+root.title("Aesthetic Password Checker 🌙")
+root.geometry("550x450")
+root.configure(bg="#0f172a")
+
+# Fonts
+title_font = font.Font(family="Helvetica", size=20, weight="bold")
+entry_font = font.Font(family="Consolas", size=13)
+button_font = font.Font(family="Arial", size=12, weight="bold")
+
+# Title Label
+title_label = tk.Label(root, text=" Password Strength Checker", font=title_font, fg="#38bdf8", bg="#0f172a")
+title_label.pack(pady=25)
+
+# Password Entry
+password_entry = tk.Entry(root,  width=32, font=entry_font, bd=0, bg="#1e293b", fg="#f1f5f9",
+                          insertbackground="#f1f5f9", relief="flat", justify="center")
+password_entry.pack(pady=10)
+password_entry.configure(highlightthickness=2, highlightbackground="#38bdf8", highlightcolor="#38bdf8")
+
+# Check Button
+check_btn = tk.Button(root, text="Check Strength", command=check_password, font=button_font,
+                      bg="#38bdf8", fg="black", activebackground="#0ea5e9", activeforeground="white",
+                      padx=10, pady=5, relief="flat", bd=0)
+check_btn.pack(pady=20)
+
+# Result Label
+result_label = tk.Label(root, text="", font=entry_font, bg="#0f172a", fg="#f1f5f9", justify="left", wraplength=450)
+result_label.pack(pady=10)
+
+root.mainloop()
+
+
