@@ -1,0 +1,106 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# Function to calculate and display results
+def calculate():
+    try:
+        name = name_entry.get()
+        subjects = int(subject_entry.get())
+        marks_dict = {}
+
+        for i in range(subjects):
+            subject = subject_entries[i][0].get()
+            marks = int(subject_entries[i][1].get())
+            marks_dict[subject] = marks
+
+        avg_marks = sum(marks_dict.values()) / subjects
+        highest = max(marks_dict.values())
+        lowest = min(marks_dict.values())
+
+        # Grade logic
+        if 90 <= avg_marks <= 100:
+            grade = "O (Outstanding)"
+            gp = 10
+        elif 75 <= avg_marks < 90:
+            grade = "A+"
+            gp = 9
+        elif 65 <= avg_marks < 75:
+            grade = "A"
+            gp = 8
+        elif 55 <= avg_marks < 65:
+            grade = "B+"
+            gp = 7
+        elif 50 <= avg_marks < 55:
+            grade = "C"
+            gp = 6
+        else:
+            grade = "F (Fail)"
+            gp = 0
+
+        result = f"""
+📘 Student Report
+Name: {name}
+Subjects and Marks: {marks_dict}
+Average Marks: {avg_marks:.2f}
+Highest Marks: {highest}
+Lowest Marks: {lowest}
+Grade: {grade}
+Grade Point: {gp}
+        """
+        messagebox.showinfo("Result", result)
+    except Exception as e:
+        messagebox.showerror("Error", f"Something went wrong!\n{e}")
+
+# Function to create subject entry fields
+def create_subject_fields():
+    global subject_entries
+    for widget in entry_frame.winfo_children():
+        widget.destroy()
+
+    try:
+        num = int(subject_entry.get())
+        subject_entries = []
+        for i in range(num):
+            lbl = tk.Label(entry_frame, text=f"Subject {i+1}:", font=("Helvetica", 10), bg="#e8f4f8")
+            lbl.grid(row=i, column=0, padx=5, pady=2)
+            sub = tk.Entry(entry_frame, width=15)
+            sub.grid(row=i, column=1, padx=5)
+            mark = tk.Entry(entry_frame, width=10)
+            mark.grid(row=i, column=2, padx=5)
+            subject_entries.append((sub, mark))
+    except:
+        messagebox.showerror("Input Error", "Please enter a valid number")
+
+# GUI setup
+root = tk.Tk()
+root.title("📘 Student Report Card Generator")
+root.geometry("700x600")
+
+# Add background image (make sure the image exists)
+
+
+# Transparent frame
+frame = tk.Frame(root, bg="#e8f4f8", bd=2)
+frame.place(relx=0.5, rely=0.1, anchor='n')
+
+title = tk.Label(frame, text="🎓 Student Report Generator", font=("Arial", 20, "bold"), bg="#e8f4f8", fg="#333")
+title.grid(row=0, columnspan=3, pady=10)
+
+tk.Label(frame, text="Student Name:", bg="#e8f4f8").grid(row=1, column=0, padx=5, pady=5)
+name_entry = tk.Entry(frame)
+name_entry.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
+
+tk.Label(frame, text="Number of Subjects:", bg="#e8f4f8").grid(row=2, column=0, padx=5, pady=5)
+subject_entry = tk.Entry(frame)
+subject_entry.grid(row=2, column=1, padx=5, pady=5)
+
+gen_button = tk.Button(frame, text="Generate Fields", command=create_subject_fields, bg="#0099cc", fg="white")
+gen_button.grid(row=2, column=2, padx=5, pady=5)
+
+entry_frame = tk.Frame(root, bg="#e8f4f8")
+entry_frame.place(relx=0.5, rely=0.35, anchor="n")
+
+calc_button = tk.Button(root, text="Calculate Result", command=calculate, bg="#28a745", fg="white", font=("Helvetica", 12, "bold"))
+calc_button.place(relx=0.5, rely=0.85, anchor="center")
+
+root.mainloop()
