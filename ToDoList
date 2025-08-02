@@ -1,0 +1,89 @@
+from typing import List
+
+# Shared list of tasks
+List = []
+
+# Show menu
+def ToDo():
+    print("\nHi! Let's make a ToDoList for today.....✔️")
+    print("1. Add Task 🆕")
+    print("2. Remove Task or Mark Done ❌")
+    print("3. Show all Tasks 🐦‍🔥")
+    print("4. Prioritize Tasks 🔺")
+    print("5. Add a number of Tasks at once <->")
+    print("6. Exit 🚪")
+
+# Add one task
+def AddTask():
+    Task = input("Enter Task Name -> ")
+    List.append(Task)
+    print("Task Added Successfully ✅")
+
+# Remove task by number
+def RemoveTask():
+    if len(List) == 0:
+        print("No tasks to remove.")
+        return
+    All()
+    index = int(input("Enter Task Number to remove -> ")) - 1
+    if index >= 0 and index < len(List):
+        removed = List.pop(index)
+        print("Task '" + removed + "' removed ❌")
+    else:
+        print("Invalid Task Number.")
+
+# Show all tasks
+def All():
+    if len(List) == 0:
+        print("No tasks added yet 📭")
+    else:
+        print("\nYour Tasks:")
+        for i in range(len(List)):
+            print(str(i+1) + ". " + List[i])
+
+# Prioritize tasks
+def PD():
+    if len(List) == 0:
+        print("No tasks to prioritize.")
+        return
+    Prior = {}
+    print("\nPriority ranges from number 1-10 (1 = Most Important) 🔥")
+    for i in range(len(List)):
+        print(List[i])
+        PN = int(input("Enter Priority Number -> "))
+        Prior.update({List[i]: PN})
+    print("\nPrioritized Tasks:")
+    for task in sorted(Prior, key=Prior.get):
+        print(task + " → Priority " + str(Prior[task]))
+
+# Add multiple tasks
+def BulkTask():
+    NoofTask = int(input("Enter number of tasks -> "))
+    for i in range(NoofTask):
+        task = input("Enter Task " + str(i+1) + " -> ")
+        List.append(task)
+    print("All tasks added successfully ✅")
+
+# Handle user choices
+def Choices():
+    while True:
+        ToDo()
+        Choice = int(input("Choose from one of the options above -> "))
+        if Choice == 1:
+            AddTask()
+        elif Choice == 2:
+            RemoveTask()
+        elif Choice == 3:
+            All()
+        elif Choice == 4:
+            PD()
+        elif Choice == 5:
+            BulkTask()
+        elif Choice == 6:
+            print("Goodbye! Stay productive 😎")
+            break
+        else:
+            print("Invalid option.")
+
+# Run the app
+Choices()
