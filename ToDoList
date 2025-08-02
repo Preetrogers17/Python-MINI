@@ -1,92 +1,107 @@
-from typing import List
+import tkinter as tk
+from tkinter import simpledialog, messagebox
 
-# Shared list of tasks
-List = []
+tasks = []
 
-# Show menu
-def ToDo():
-    print("\nHi! Let's make a ToDoList for today.....✔️")
-    print("1. Add Task 🆕")
-    print("2. Remove Task or Mark Done ❌")
-    print("3. Show all Tasks 🐦‍🔥")
-    print("4. Prioritize Tasks 🔺")
-    print("5. Add a number of Tasks at once <->")
-    print("6. Exit 🚪")
+# Main functions
+def add_task():
+    task = simpledialog.askstring("Add Task", "Enter Task Name:")
+    if task:
+        tasks.append(task)
+        update_tasks()
 
-# Add one task
-def AddTask():
-    Task = input("Enter Task Name -> ")
-    List.append(Task)
-    print("Task Added Successfully ✅")
-
-# Remove task by number
-def RemoveTask():
-    if len(List) == 0:
-        print("No tasks to remove.")
+def remove_task():
+    if not tasks:
+        messagebox.showinfo("Info", "No tasks to remove.")
         return
-    All()
-    index = int(input("Enter Task Number to remove -> ")) - 1
-    if index >= 0 and index < len(List):
-        removed = List.pop(index)
-        print("Task '" + removed + "' removed ❌")
+    index = task_listbox.curselection()
+    if index:
+        removed = tasks.pop(index[0])
+        update_tasks()
+        messagebox.showinfo("Removed", f"Task '{removed}' removed ❌")
     else:
-        print("Invalid Task Number.")
+        messagebox.showwarning("Warning", "Select a task to remove.")
 
-# Show all tasks
-def All():
-    if len(List) == 0:
-        print("No tasks added yet 📭")
-    else:
-        print("\nYour Tasks:")
-        for i in range(len(List)):
-            print(str(i+1) + ". " + List[i])
+def show_all():
+    update_tasks()
 
-# Prioritize tasks
-def PD():
-    if len(List) == 0:
-        print("No tasks to prioritize.")
+def prioritize_tasks():
+    if not tasks:
+        messagebox.showinfo("Info", "No tasks to prioritize.")
         return
-    Prior = {}
-    print("\nPriority ranges from number 1-10 (1 = Most Important) 🔥")
-    for i in range(len(List)):
-        print(List[i])
-        PN = int(input("Enter Priority Number -> "))
-        Prior.update({List[i]: PN})
-    print("\nPrioritized Tasks:")
-    for task in sorted(Prior, key=Prior.get):
-        print(task + " → Priority " + str(Prior[task]))
 
-# Add multiple tasks
-def BulkTask():
-    NoofTask = int(input("Enter number of tasks -> "))
-    for i in range(NoofTask):
-        task = input("Enter Task " + str(i+1) + " -> ")
-        List.append(task)
-    print("All tasks added successfully ✅")
+    priority_window = tk.Toplevel(root)
+    priority_window.configure(bg="#121212")
+    priority_window.title("Prioritize Tasks")
 
-# Handle user choices
-def Choices():
-    while True:
-        ToDo()
-        Choice = int(input("Choose from one of the options above -> "))
-        if Choice == 1:
-            AddTask()
-        elif Choice == 2:
-            RemoveTask()
-        elif Choice == 3:
-            All()
-        elif Choice == 4:
-            PD()
-        elif Choice == 5:
-            BulkTask()
-        elif Choice == 6:
-            print("Goodbye! Stay productive 😎")
-            break
-        else:
-            print("Invalid option.")
+    task_priorities = {}
 
-# Run the app
-Choices()
+    def save_priorities():
+        for i in range(len(tasks)):
+            try:
+                pn = int(priority_entries[i].get())
+                task_priorities[tasks[i]] = pn
+            except ValueError:
+                continue
+        sorted_tasks = sorted(task_priorities.items(), key=lambda x: x[1])
+        result = "\n".join([f"{task} → Priority {prio}" for task, prio in sorted_tasks])
+        messagebox.showinfo("Prioritized Tasks", result)
+        priority_window.destroy()
+
+    priority_entries = []
+    for i, task in enumerate(tasks):
+        tk.Label(priority_window, text=task, bg="#121212", fg="lime", font=("Courier", 10)).pack()
+        entry = tk.Entry(priority_window, bg="#1e1e1e", fg="white", insertbackground="white")
+        entry.pack(pady=2)
+        priority_entries.append(entry)
+
+    tk.Button(priority_window, text="Save Priorities", command=save_priorities, bg="lime", fg="black").pack(pady=10)
+
+def add_bulk_tasks():
+    try:
+        count = int(simpledialog.askstring("Bulk Add", "How many tasks?"))
+        for i in range(count):
+            task = simpledialog.askstring("Task", f"Enter Task {i + 1}:")
+            if task:
+                tasks.append(task)
+        update_tasks()
+        messagebox.showinfo("Success", "All tasks added successfully ✅")
+    except:
+        pass
+
+def update_tasks():
+    task_listbox.delete(0, tk.END)
+    for task in tasks:
+        task_listbox.insert(tk.END, task)
+
+# Setup GUI
+root = tk.Tk()
+root.title("ToDo List 📝")
+root.geometry("400x500")
+root.configure(bg="#121212")
+
+tk.Label(root, text="ToDo List 🐍", fg="lime", bg="#121212", font=("Courier", 16, "bold")).pack(pady=10)
+
+task_listbox = tk.Listbox(root, bg="#1e1e1e", fg="white", font=("Courier", 12), selectbackground="lime", selectforeground="black")
+task_listbox.pack(pady=10, fill=tk.BOTH, expand=True, padx=20)
+
+btn_frame = tk.Frame(root, bg="green")
+btn_frame.pack(pady=10)
+
+buttons = [
+    ("Add Task", add_task),
+    ("Remove Task", remove_task),
+    ("Show All", show_all),
+    ("Prioritize", prioritize_tasks),
+    ("Add Bulk", add_bulk_tasks),
+    ("Exit", root.quit)
+]
+
+for text, cmd in buttons:
+    tk.Button(btn_frame, text=text, command=cmd, bg="lime", fg="black", font=("Courier", 10), width=15).pack(pady=4)
+
+root.mainloop()
+
 
 #without ui code
 from typing import List
