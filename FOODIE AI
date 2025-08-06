@@ -1,0 +1,46 @@
+import google.generativeai as genai
+
+# Configure API
+genai.configure(api_key='AIzaSyD2vGWRNHfwklQR6ZwTYaDNxaoijFubHl8')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
+
+
+def cook_prompt(food):
+    prompt1 = f"""**Cook** – Provide a step-by-step recipe for how to cook the {food} at home. Mention ingredients, cooking time, and tips if any."""
+
+    prompt2 = f"""**Food Insights** – Generate:
+- Nutritional information (calories, proteins, fats, carbs)
+- A short calorie chart
+- 2–3 pros (benefits of eating this food)
+- 2–3 cons (health warnings or overconsumption risks) for the {food}."""
+
+    prompt3 = f"""**Order** – Show a simulated list of 3 nearby restaurants where {food} is available. For each restaurant, include:
+- Restaurant name
+- A short review comment
+- Distance (in km)
+- Rating (out of 5)
+- Price of the item."""
+
+    # Take user choice
+    choice = input("What would you like to do?\n1. Cook\n2. Food Insights\n3. Order\nEnter your choice (1/2/3): ")
+
+    if choice == '1':
+        response = model.generate_content(prompt1)
+        print("\n🍳 Recipe:\n")
+        print(response.text)
+    elif choice == '2':
+        response = model.generate_content(prompt2)
+        print("\n📊 Food Insights:\n")
+        print(response.text)
+    elif choice == '3':
+        response = model.generate_content(prompt3)
+        print("\n🍴 Nearby Restaurants:\n")
+        print(response.text)
+    else:
+        print("❌ Invalid choice. Please enter 1, 2, or 3.")
+
+
+# Take food item input first
+food = input("🍽️ Enter your food item: ")
+ 
+cook_prompt(food)
